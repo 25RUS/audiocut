@@ -8,17 +8,18 @@
 #include <QProcess>
 #include <QTextEdit>
 #include <QComboBox>
-//#include <QDebug>
+#include <QAction>
+#include <QDir>
+#include <QStringList>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    ui->comboBox->addItem(QStringLiteral(".cue .flac"), 1);
-    ui->comboBox->addItem(QStringLiteral(".cue .ape"), 2);
-    ui->comboBox->addItem(QStringLiteral(".cue .wav"), 3);
-
+    connect(ui->action, &QAction::triggered, this, &MainWindow::close);
+    connect(ui->action_2, &QAction::triggered, this, &MainWindow::close);
+    connect(ui->action_3, &QAction::triggered, this, &MainWindow::close);
 }
 
 
@@ -36,23 +37,42 @@ QProcess *cut = new QProcess();
 void MainWindow::on_pushButton_clicked()
 {
 
+    ui->textEdit->clear();
+
     QString in = ui->lineEdit->text();
     QString out = ui->lineEdit_2->text();
 
-    //cut->setWorkingDirectory(out);
+
+    //cut->isWritable();
 
     if(in!="" && out!="")
     {
 
-        QString format = ui->comboBox->currentText(), fileformat;
-        if(format ==".cue .flac")
-            fileformat = "*.flac";
-        else if(format ==".cue .ape")
-            fileformat = "*.ape";
-        else if(format ==".cue .wav")
-            fileformat = "*.wav";
+        QDir sourcedir(in);
+        QString infile="", incue="";
+        QString in_format = "*.flac *.ape *.wav", cue = "*.cue";
 
-        cut->start("mkdir " + out + "/out");
+        QStringList audiofilelist = sourcedir.entryList(in_format.split(" "), QDir::Files);
+        for (QStringList::const_iterator it = audiofilelist.constBegin(); it != audiofilelist.constEnd(); ++it)
+            infile = (*it); //ну кагбэ так пока
+
+        QStringList cuefilelist = sourcedir.entryList(cue.split(" "), QDir::Files);
+        for (QStringList::const_iterator it = cuefilelist.constBegin(); it != cuefilelist.constEnd(); ++it)
+            incue = (*it); //ну кагбэ так пока
+
+        QString outdir[20];// = in.split("/");
+
+        for(int i=0, k=0; i<in.size(); i++)
+        {
+            if(in[i]!='/')
+                outdir[k]+=in[i];
+            else
+                k++;
+        }
+
+        int cnt=outdir->count();
+        QString outdir0 = outdir[cnt-1];
+        cut->start("mkdir " + out + '/' + outdir0);
 
         if( !cut->waitForStarted() || !cut->waitForFinished() )
         {
@@ -60,9 +80,11 @@ void MainWindow::on_pushButton_clicked()
         }
         ui->textEdit->insertPlainText(cut->readAllStandardOutput());
         ui->textEdit->insertPlainText(cut->readAllStandardError());
+        cut->close();
 
-        //QMessageBox::information(this, "debug", "shnsplit -d " + out + "/out -f " + in + "/*.cue -o \"flac flac -V --best -o %f -\" "  + in  + '/' + fileformat + " -t \"%n. %p - %t\"");
-        cut->start("shnsplit -d " + out + "/out -f " + in + "/*.cue -o \"flac flac -V --best -o %f -\" "  + in  + '/' + fileformat + " -t \"%n. %p - %t\"");
+        //cut->setWorkingDirectory(out);
+
+        cut->start("shnsplit -d " + out + '/' + outdir0 + " -f " + in + '/' + incue + " -o \"flac flac -V --best -o %f -\" "  + in  + '/' + infile + " -t \"%n. %p - %t\"");
 
         if( !cut->waitForStarted() || !cut->waitForFinished() )
         {
@@ -70,15 +92,21 @@ void MainWindow::on_pushButton_clicked()
         }
         ui->textEdit->insertPlainText(cut->readAllStandardOutput());
         ui->textEdit->insertPlainText(cut->readAllStandardError());
+        cut->close();
     }
     else
         QMessageBox::critical(this, "ERROR!", "Заполните поля!");
 
 }
 
+//open input directory
+void MainWindow::on_pushButton_2_clicked()
+{
 
+}
 
+//open output directory
+void MainWindow::on_pushButton_3_clicked()
+{
 
-
-
-
+}
