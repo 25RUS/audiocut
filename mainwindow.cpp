@@ -14,6 +14,9 @@
 #include <QStringList>
 #include <QFileDialog>
 #include <QPushButton>
+#include <QTextCodec>
+#include <QTextDecoder>
+#include <QTextStream>
 
 void target(QString);
 
@@ -117,10 +120,15 @@ void MainWindow::translate()
     target(dir);
 
     QFile cuefile(dir + '/' + incue);
-    if(cuefile.open(QIODevice::ReadWrite | QIODevice::Text))
+    if(cuefile.open(QIODevice::ReadWrite /*| QIODevice::Text*/))
     {
-        QString tmp = cuefile.readAll();
-            QMessageBox::information(this, "translate_debug", tmp);
+        QByteArray tmp = cuefile.readAll();
+        QTextCodec* defaultTextCodec = QTextCodec::codecForName("Windows-1251");
+        QTextDecoder *decoder = new QTextDecoder(defaultTextCodec);
+        QString str = decoder->toUnicode(tmp);
+        QTextStream write2cue(&cuefile);
+        write2cue << str;
+        //QMessageBox::information(this, "translate_debug", str);
     }
 
 }
