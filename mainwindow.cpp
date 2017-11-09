@@ -10,7 +10,13 @@
 #include <QComboBox>
 #include <QAction>
 #include <QDir>
+#include <QFile>
 #include <QStringList>
+#include <QFileDialog>
+#include <QPushButton>
+
+void target(QString);
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -20,6 +26,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->action, &QAction::triggered, this, &MainWindow::close);
     connect(ui->action_2, &QAction::triggered, this, &MainWindow::close);
     connect(ui->action_3, &QAction::triggered, this, &MainWindow::close);
+    connect(ui->action_3, &QAction::triggered, this, &MainWindow::close);
+    connect(ui->action_4, &QAction::triggered, this, &MainWindow::translate);
 }
 
 
@@ -29,9 +37,9 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
-
 QProcess *cut = new QProcess();
+QString infile="", incue=""; //сюда запишутся имена входных файлов
+QString in_format = "*.flac *.ape *.wav", cue = "*.cue"; //форматы файлов на вход
 
 
 void MainWindow::on_pushButton_clicked()
@@ -39,53 +47,18 @@ void MainWindow::on_pushButton_clicked()
 
     ui->textEdit->clear();
 
-    QString in = ui->lineEdit->text();
-    QString out = ui->lineEdit_2->text();
-
-
-    //cut->isWritable();
+    QString in = ui->lineEdit->text(); //исходная директория
+    QString out = ui->lineEdit_2->text(); //целевая директория
 
     if(in!="" && out!="")
     {
+        //определение путей
+        target(in);
 
-        QDir sourcedir(in);
-        QString infile="", incue="";
-        QString in_format = "*.flac *.ape *.wav", cue = "*.cue";
+        //команда на начало резки файла
+        cut->start("shnsplit -d " + out + '/' + /*outdir +*/ " -f " + in + '/' + incue + " -o \"flac flac -V --best -o %f -\" "  + in  + '/' + infile + " -t \"%n. %p - %t\"");
 
-        QStringList audiofilelist = sourcedir.entryList(in_format.split(" "), QDir::Files);
-        for (QStringList::const_iterator it = audiofilelist.constBegin(); it != audiofilelist.constEnd(); ++it)
-            infile = (*it); //ну кагбэ так пока
-
-        QStringList cuefilelist = sourcedir.entryList(cue.split(" "), QDir::Files);
-        for (QStringList::const_iterator it = cuefilelist.constBegin(); it != cuefilelist.constEnd(); ++it)
-            incue = (*it); //ну кагбэ так пока
-
-        QString outdir[20];// = in.split("/");
-
-        for(int i=0, k=0; i<in.size(); i++)
-        {
-            if(in[i]!='/')
-                outdir[k]+=in[i];
-            else
-                k++;
-        }
-
-        int cnt=outdir->count();
-        QString outdir0 = outdir[cnt-1];
-        cut->start("mkdir " + out + '/' + outdir0);
-
-        if( !cut->waitForStarted() || !cut->waitForFinished() )
-        {
-            return;
-        }
-        ui->textEdit->insertPlainText(cut->readAllStandardOutput());
-        ui->textEdit->insertPlainText(cut->readAllStandardError());
-        cut->close();
-
-        //cut->setWorkingDirectory(out);
-
-        cut->start("shnsplit -d " + out + '/' + outdir0 + " -f " + in + '/' + incue + " -o \"flac flac -V --best -o %f -\" "  + in  + '/' + infile + " -t \"%n. %p - %t\"");
-
+        //обработка ответов от команды
         if( !cut->waitForStarted() || !cut->waitForFinished() )
         {
             return;
@@ -102,11 +75,52 @@ void MainWindow::on_pushButton_clicked()
 //open input directory
 void MainWindow::on_pushButton_2_clicked()
 {
+            QString dirname = QFileDialog::getExistingDirectory(
+                       this,
+                       tr("Select a Directory"),
+                       QDir::currentPath() );
 
+           ui->lineEdit->setText(dirname);
 }
 
 //open output directory
 void MainWindow::on_pushButton_3_clicked()
 {
+    QString dirname = QFileDialog::getExistingDirectory(
+                       this,
+                       tr("Select a Directory"),
+                       QDir::currentPath() );
+
+           ui->lineEdit_2->setText(dirname);
+}
+
+void target(QString in)
+{
+    QDir sourcedir(in);
+
+    //определение названия аудиофайлов
+    QStringList audiofilelist = sourcedir.entryList(in_format.split(" "), QDir::Files);
+    for (QStringList::const_iterator it = audiofilelist.constBegin(); it != audiofilelist.constEnd(); ++it)
+        infile = (*it); //ну кагбэ так пока
+
+    //определение .cue файлов
+    QStringList cuefilelist = sourcedir.entryList(cue.split(" "), QDir::Files);
+    for (QStringList::const_iterator it = cuefilelist.constBegin(); it != cuefilelist.constEnd(); ++it)
+        incue = (*it); //ну кагбэ так пока
+}
+
+//translation to latin & removing " "
+void MainWindow::translate()
+{
+
+    QString dir = ui->lineEdit->text();
+    target(dir);
+
+    QFile cuefile(dir + '/' + incue);
+    if(cuefile.open(QIODevice::ReadWrite | QIODevice::Text))
+    {
+        QString tmp = cuefile.readAll();
+            QMessageBox::information(this, "translate_debug", tmp);
+    }
 
 }
