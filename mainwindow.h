@@ -18,15 +18,17 @@ public:
 private slots:
     void on_pushButton_clicked();
 
-    void on_comboBox_currentIndexChanged(const QString &arg1);
+//    void on_comboBox_currentIndexChanged(const QString &arg1);
 
-    void on_comboBox_currentIndexChanged(int index);
+//    void on_comboBox_currentIndexChanged(int index);
 
     void on_pushButton_2_clicked();
 
     void on_pushButton_3_clicked();
 
     void translate(/*QString*/);
+
+    void about();
 
 private:
     Ui::MainWindow *ui;

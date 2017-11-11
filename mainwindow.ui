@@ -83,9 +83,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>160</y>
+      <y>180</y>
       <width>361</width>
-      <height>201</height>
+      <height>181</height>
      </rect>
     </property>
    </widget>
@@ -93,13 +93,13 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>140</y>
+      <y>160</y>
       <width>211</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>Вывод:</string>
+     <string>Вывод консоли:</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_2">
@@ -128,6 +128,19 @@
      <string>...</string>
     </property>
    </widget>
+   <widget class="QCheckBox" name="checkBox">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>120</y>
+      <width>361</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Автоконвертация .cue</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -142,8 +155,6 @@
     <property name="title">
      <string>Файл</string>
     </property>
-    <addaction name="action"/>
-    <addaction name="action_2"/>
     <addaction name="action_3"/>
    </widget>
    <widget class="QMenu" name="menu_2">
@@ -152,8 +163,15 @@
     </property>
     <addaction name="action_4"/>
    </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>Справка</string>
+    </property>
+    <addaction name="action_5"/>
+   </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
+   <addaction name="menu_3"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -181,7 +199,12 @@
   </action>
   <action name="action_4">
    <property name="text">
-    <string>Преобразовать русские буквы в английские</string>
+    <string>Конвертировать .cue</string>
+   </property>
+  </action>
+  <action name="action_5">
+   <property name="text">
+    <string>О программе</string>
    </property>
   </action>
  </widget>
