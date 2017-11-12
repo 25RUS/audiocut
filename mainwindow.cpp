@@ -68,6 +68,8 @@ void MainWindow::on_pushButton_clicked()
         }
         ui->textEdit->insertPlainText(cut->readAllStandardOutput());
         ui->textEdit->insertPlainText(cut->readAllStandardError());
+
+        ui->textEdit->insertPlainText("Дождитесь окончания процесса!\n");
         cut->close();
     }
     else
@@ -124,7 +126,7 @@ void MainWindow::translate()
         target(dir);
         QFile cuefile(dir + '/' + incue);
         QFile cuefileout(dir + '/' + "converted.cue");
-        QString str;
+        QString str, str0;
 
         //преобразование к utf8
         if(cuefile.open(QIODevice::ReadOnly /*| QIODevice::Text*/))
@@ -134,144 +136,180 @@ void MainWindow::translate()
             QTextDecoder *decoder = new QTextDecoder(defaultTextCodec);
             str = decoder->toUnicode(tmp);
 
-                for(int i=0; i<str.size(); i++)
-                {
-                   if(str[i]=="А")
-                       str[i]='A';
-                   else if(str[i]=="а")
-                       str[i]='a';
-                   else if(str[i]=="Б")
-                       str[i]='B';
-                   else if(str[i]=="б")
-                       str[i]='b';
-                   else if(str[i]=="В")
-                       str[i]='V';
-                   else if(str[i]=="в")
-                       str[i]='v';
-                   else if(str[i]=="Г")
-                       str[i]='G';
-                   else if(str[i]=="г")
-                       str[i]='g';
-                   else if(str[i]=="Д")
-                       str[i]='D';
-                   else if(str[i]=="д")
-                       str[i]='d';
-                   else if(str[i]=="Е")
-                       str[i]='E';
-                   else if(str[i]=="е")
-                       str[i]='e';
-                   else if(str[i]=="Ё")
-                       str[i]='E';
-                   else if(str[i]=="ё")
-                       str[i]='e';
-                   else if(str[i]=="Ж")
-                       str[i]='J';
-                   else if(str[i]=="ж")
-                       str[i]='j';
-                   else if(str[i]=="З")
-                       str[i]='Z';
-                   else if(str[i]=="з")
-                       str[i]='z';
-                   else if(str[i]=="И")
-                       str[i]='I';
-                   else if(str[i]=="и")
-                       str[i]='i';
-                   else if(str[i]=="Й")
-                       str[i]='J';
-                   else if(str[i]=="й")
-                       str[i]='j';
-                   else if(str[i]=="К")
-                       str[i]='K';
-                   else if(str[i]=="к")
-                       str[i]='k';
-                   else if(str[i]=="Л")
-                       str[i]='L';
-                   else if(str[i]=="л")
-                       str[i]='l';
-                   else if(str[i]=="М")
-                       str[i]='M';
-                   else if(str[i]=="м")
-                       str[i]='m';
-                   else if(str[i]=="Н")
-                       str[i]='N';
-                   else if(str[i]=="н")
-                       str[i]='n';
-                   else if(str[i]=="О")
-                       str[i]='O';
-                   else if(str[i]=="о")
-                       str[i]='o';
-                   else if(str[i]=="П")
-                       str[i]='P';
-                   else if(str[i]=="п")
-                       str[i]='p';
-                   else if(str[i]=="Р")
-                       str[i]='R';
-                   else if(str[i]=="р")
-                       str[i]='r';
-                   else if(str[i]=="С")
-                       str[i]='S';
-                   else if(str[i]=="с")
-                       str[i]='s';
-                   else if(str[i]=="Т")
-                       str[i]='T';
-                   else if(str[i]=="т")
-                       str[i]='t';
-                   else if(str[i]=="У")
-                       str[i]='U';
-                   else if(str[i]=="у")
-                       str[i]='u';
-                   else if(str[i]=="Ф")
-                       str[i]='F';
-                   else if(str[i]=="ф")
-                       str[i]='f';
-                   else if(str[i]=="Х")
-                       str[i]='H';
-                   else if(str[i]=="х")
-                       str[i]='h';
-                   else if(str[i]=="Ц")
-                       str[i]='C';
-                   else if(str[i]=="ц")
-                       str[i]='c';
-                   else if(str[i]=="Ч")
-                       str[i]='C';
-                   else if(str[i]=="ч")
-                       str[i]='c';
-                   else if(str[i]=="Ш")
-                       str[i]='S';
-                   else if(str[i]=="ш")
-                       str[i]='s';
-                   else if(str[i]=="Щ")
-                       str[i]='S';
-                   else if(str[i]=="щ")
-                       str[i]='s';
-                   else if(str[i]=="Ъ")
-                       str[i]='\'';
-                   else if(str[i]=="ъ")
-                       str[i]='\'';
-                   else if(str[i]=="Ы")
-                       str[i]='I';
-                   else if(str[i]=="ы")
-                       str[i]='i';
-                   else if(str[i]=="Ь")
-                       str[i]='`';
-                   else if(str[i]=="ь")
-                       str[i]='`';
-                   else if(str[i]=="Э")
-                       str[i]='E';
-                   else if(str[i]=="э")
-                       str[i]='e';
-                   else if(str[i]=="Ю")
-                       str[i]='U';
-                   else if(str[i]=="ю")
-                       str[i]='u';
-                   else if(str[i]=="Я")
-                       str[i]='A';
-                   else if(str[i]=="я")
-                       str[i]='a';
-                   else
-                       str[i]=str[i];
-                }
-           // QMessageBox::information(this, "debug", str);
+            for(int i=0; i<str.size(); i++)
+            {
+               if(str[i]=="А")
+                   str0+='A';
+               else if(str[i]=="а")
+                   str0+='a';
+               else if(str[i]=="Б")
+                   str0+='B';
+               else if(str[i]=="б")
+                   str0+='b';
+               else if(str[i]=="В")
+                   str0+='V';
+               else if(str[i]=="в")
+                   str0+='v';
+               else if(str[i]=="Г")
+                   str0+='G';
+               else if(str[i]=="г")
+                   str0+='g';
+               else if(str[i]=="Д")
+                   str0+='D';
+               else if(str[i]=="д")
+                   str0+='d';
+               else if(str[i]=="Е")
+                   str0+='E';
+               else if(str[i]=="е")
+                   str0+='e';
+               else if(str[i]=="Ё")
+               {
+                    str0+='Y';
+                    str0+='o';
+               }
+               else if(str[i]=="ё")
+               {
+                    str0+='y';
+                    str0+='o';
+               }
+               else if(str[i]=="Ж")
+               {
+                    str0+='Z';
+                    str0+='h';
+               }
+               else if(str[i]=="ж")
+               {
+                    str0+='z';
+                    str0+='h';
+               }
+               else if(str[i]=="З")
+                   str0+='Z';
+               else if(str[i]=="з")
+                   str0+='z';
+               else if(str[i]=="И")
+                   str0+='I';
+               else if(str[i]=="и")
+                   str0+='i';
+               else if(str[i]=="Й")
+                   str0+='J';
+               else if(str[i]=="й")
+                   str0+='j';
+               else if(str[i]=="К")
+                   str0+='K';
+               else if(str[i]=="к")
+                   str0+='k';
+               else if(str[i]=="Л")
+                   str0+='L';
+               else if(str[i]=="л")
+                   str0+='l';
+               else if(str[i]=="М")
+                   str0+='M';
+               else if(str[i]=="м")
+                   str0+='m';
+               else if(str[i]=="Н")
+                   str0+='N';
+               else if(str[i]=="н")
+                   str0+='n';
+               else if(str[i]=="О")
+                   str0+='O';
+               else if(str[i]=="о")
+                   str0+='o';
+               else if(str[i]=="П")
+                   str0+='P';
+               else if(str[i]=="п")
+                   str0+='p';
+               else if(str[i]=="Р")
+                   str0+='R';
+               else if(str[i]=="р")
+                   str0+='r';
+               else if(str[i]=="С")
+                   str0+='S';
+               else if(str[i]=="с")
+                   str0+='s';
+               else if(str[i]=="Т")
+                   str0+='T';
+               else if(str[i]=="т")
+                   str0+='t';
+               else if(str[i]=="У")
+                   str0+='U';
+               else if(str[i]=="у")
+                   str0+='u';
+               else if(str[i]=="Ф")
+                   str0+='F';
+               else if(str[i]=="ф")
+                   str0+='f';
+               else if(str[i]=="Х")
+                   str0+='H';
+               else if(str[i]=="х")
+                   str0+='h';
+               else if(str[i]=="Ц")
+                   str0+='C';
+               else if(str[i]=="ц")
+                   str0+='c';
+               else if(str[i]=="Ч")
+               {
+                    str0+='C';
+                    str0+='h';
+               }
+               else if(str[i]=="ч")
+               {
+                    str0+='c';
+                    str0+='h';
+               }
+               else if(str[i]=="Ш")
+               {
+                    str0+='S';
+                    str0+='h';
+               }
+               else if(str[i]=="ш")
+               {
+                    str0+='s';
+                    str0+='h';
+               }
+               else if(str[i]=="Щ")
+               {
+                    str0+='S';
+                    str0+='h';
+               }
+               else if(str[i]=="щ")
+               {
+                    str0+='s';
+                    str0+='h';
+               }
+               else if(str[i]=="Ъ")
+                   /*str0+=""*/;
+               else if(str[i]=="ъ")
+                   /*str0+=""*/;
+               else if(str[i]=="Ы")
+                   str0+='I';
+               else if(str[i]=="ы")
+                   str0+='i';
+               else if(str[i]=="Ь")
+                   /*str0+=""*/;
+               else if(str[i]=="ь")
+                   /*str0+=""*/;
+               else if(str[i]=="Э")
+                   str0+='E';
+               else if(str[i]=="э")
+                   str0+='e';
+               else if(str[i]=="Ю")
+                   str0+='U';
+               else if(str[i]=="ю")
+                   str0+='u';
+               else if(str[i]=="Я")
+               {
+                    str0+='Y';
+                    str0+='a';
+               }
+               else if(str[i]=="я")
+               {
+                    str0+='y';
+                    str0+='a';
+               }
+               else
+                   str0+=str[i];
+            }
+
             cuefile.close();
         }
 
@@ -279,9 +317,12 @@ void MainWindow::translate()
         if(cuefileout.open(QIODevice::WriteOnly | QIODevice::Text))
         {
             QTextStream write2cue(&cuefileout);
-            write2cue << str;
+            write2cue << str0;
             cuefileout.close();
         }
+
+        //определение расширения
+        QStringList type = infile.split(".");
 
         //модификация строки FILE
         QStringList lines;
@@ -297,7 +338,7 @@ void MainWindow::translate()
             {
                 QStringList words = lines[k].split(" ");
                 if(words[0]=="FILE")
-                    lines[k]="FILE \"track.flac\" WAVE";
+                    lines[k]="FILE \"audiotrack." + type[1] + "\" WAVE";
             }
             cuefileout.close();
         }
@@ -329,18 +370,21 @@ void MainWindow::translate()
 //            else
 //                infileout+=infile[i];
 //        }
-        QFile::rename(dir + '/' + infile, dir + '/' + /*infileout*/ "track.flac");
 
-        ui->textEdit->insertPlainText("конвертация завершена!\n");
+        QFile::rename(dir + '/' + infile, dir + '/' + /*infileout*/ "audiotrack." + type[1]);
+
+        ui->textEdit->insertPlainText("Преобразование исходных файлов успешно.\n");
     }
 
 }
+
 
 void MainWindow::about()
 {
     QMessageBox::information(this, "About AudioCut", "AudioCut - графическая оболочка для shnsplit\n"
                                                      "поддерживаются форматы .flac .ape .wav\n"
                                                      "Исходники https://github.com/25RUS/audiocut\n"
-                                                     "Автор Ревчук Ю.Ю. adnet_9@live.com"
+                                                     "Автор: Ревчук Ю.Ю. "
+                                                     "adnet_9@live.com"
                                                     );
 }
