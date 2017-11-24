@@ -1,4 +1,4 @@
-Summary:	AudioCut .flac .ape .wav splitter
+Summary:	Graphical .flac .ape .wav splitter
 Name:		audiocut	
 Version:	1.0
 Release:	1
@@ -18,12 +18,13 @@ Requires: flac
 Requires: wavpack
 
 %description
-AudioCut is graphical .flac .ape .wav splitter.
+audiocut is graphical interface for shntool
 
 %files
-%{_bindir}/%{name}-%{version}
+%{_bindir}/%{name}
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/pixmaps/%{name}.png
+%doc doc/LICENSE doc/README.md
 
 #------------------------------------------------------------------
 
@@ -43,7 +44,7 @@ cat > %{buildroot}%{_datadir}/applications/%{name}.desktop << EOF
 Type=Application
 Name=AudioCut
 Comment=AudioCut is GUI for shntool
-Exec=%{name}-%{version}
+Exec=%{name}
 Icon=%{name}
 StartupNotify=false
 Terminal=false
