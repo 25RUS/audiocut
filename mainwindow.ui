@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>AudioCut</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>audiocut.png</normaloff>audiocut.png</iconset>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QLineEdit" name="lineEdit">
     <property name="geometry">
@@ -138,7 +142,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Автоконвертация .cue</string>
+     <string>Автоконвертация .cue в латиницу</string>
     </property>
    </widget>
   </widget>
@@ -199,7 +203,7 @@
   </action>
   <action name="action_4">
    <property name="text">
-    <string>Конвертировать .cue</string>
+    <string>Конвертировать .&amp;cue</string>
    </property>
   </action>
   <action name="action_5">

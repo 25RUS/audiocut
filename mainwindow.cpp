@@ -196,8 +196,7 @@ void MainWindow::about()
     QMessageBox::information(this, "About AudioCut", "AudioCut - графическая оболочка для shnsplit\n"
                                                      "поддерживаются форматы .flac .ape .wav\n"
                                                      "Исходники https://github.com/25RUS/audiocut\n"
-                                                     "Автор: Ревчук Ю.Ю. "
-                                                     "adnet_9@live.com"
+                                                     "Ревчук Ю.Ю. <adnet_9@live.com> 2017"
                                                     );
 }
 
