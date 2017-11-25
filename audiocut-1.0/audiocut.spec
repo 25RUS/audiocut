@@ -12,7 +12,6 @@ BuildRequires:	pkgconfig(Qt5Core)
 BuildRequires:	pkgconfig(Qt5DBus)
 BuildRequires:	pkgconfig(Qt5Gui)
 BuildRequires:	pkgconfig(Qt5Widgets)
-
 Requires: shntool
 Requires: flac
 Requires: wavpack
@@ -21,10 +20,10 @@ Requires: wavpack
 audiocut is graphical interface for shntool
 
 %files
+%doc LICENSE README.md
 %{_bindir}/%{name}
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/pixmaps/%{name}.png
-%doc doc/LICENSE doc/README.md
 
 #------------------------------------------------------------------
 
