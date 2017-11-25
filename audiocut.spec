@@ -5,7 +5,7 @@ Release:	1
 License:	GPLv3
 Group:		Sound 
 Url:		https://github.com/25RUS/audiocut
-Source0:	%{name}-%{version}.tar.bz2
+Source0:	%{name}-%{version}.tar.gz
 BuildRequires:  cmake
 BuildRequires:  qt5-devel
 BuildRequires:	pkgconfig(Qt5Core)
