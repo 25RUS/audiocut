@@ -6,6 +6,7 @@
 Написано на С++ qt5.9
 
 Автор Ревчук Ю.Ю. <adnet_9@live.com>
+
 https://github.com/25RUS/audiocut
 #
 ![Окно программы](https://github.com/25RUS/img/blob/master/face.png)
