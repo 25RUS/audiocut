@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->action_3, &QAction::triggered, this, &MainWindow::close);
     connect(ui->action_4, &QAction::triggered, this, &MainWindow::translate);
     connect(ui->action_5, &QAction::triggered, this, &MainWindow::about);
+    connect(ui->action_6, &QAction::triggered, this, &MainWindow::license);
 }
 
 
@@ -190,14 +191,30 @@ void MainWindow::translate()
 
 }
 
-
+//about
 void MainWindow::about()
 {
-    QMessageBox::information(this, "About AudioCut", "AudioCut - графическая оболочка для shnsplit\n"
-                                                     "поддерживаются форматы .flac .ape .wav\n"
-                                                     "Исходники https://github.com/25RUS/audiocut\n"
-                                                     "Ревчук Ю.Ю. <adnet_9@live.com> 2017"
-                                                    );
+    QFile readme("/usr/share/doc/audiocut/README.md");
+    QString txt;
+    if(readme.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        txt=readme.readAll();
+    }
+
+    QMessageBox::information(this, "About AudioCut", txt);
+}
+
+//license
+void MainWindow::license()
+{
+    QFile lic("/usr/share/doc/audiocut/LICENSE");
+    QString txt;
+    if(lic.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        txt=lic.readAll();
+    }
+
+    QMessageBox::information(this, "About AudioCut", txt);
 }
 
 QString replace(QString str, bool p)

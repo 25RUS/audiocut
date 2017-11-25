@@ -172,6 +172,7 @@
      <string>Справка</string>
     </property>
     <addaction name="action_5"/>
+    <addaction name="action_6"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -209,6 +210,11 @@
   <action name="action_5">
    <property name="text">
     <string>О программе</string>
+   </property>
+  </action>
+  <action name="action_6">
+   <property name="text">
+    <string>Лицензия</string>
    </property>
   </action>
  </widget>

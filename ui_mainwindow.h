@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 5.9.2
+** Created by: Qt User Interface Compiler version 5.9.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -36,6 +36,7 @@ public:
     QAction *action_3;
     QAction *action_4;
     QAction *action_5;
+    QAction *action_6;
     QWidget *centralWidget;
     QLineEdit *lineEdit;
     QLineEdit *lineEdit_2;
@@ -60,7 +61,7 @@ public:
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
         MainWindow->resize(400, 476);
         QIcon icon;
-        icon.addFile(QStringLiteral("../audiocut.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(QStringLiteral("audiocut.png"), QSize(), QIcon::Normal, QIcon::Off);
         MainWindow->setWindowIcon(icon);
         action = new QAction(MainWindow);
         action->setObjectName(QStringLiteral("action"));
@@ -72,6 +73,8 @@ public:
         action_4->setObjectName(QStringLiteral("action_4"));
         action_5 = new QAction(MainWindow);
         action_5->setObjectName(QStringLiteral("action_5"));
+        action_6 = new QAction(MainWindow);
+        action_6->setObjectName(QStringLiteral("action_6"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         lineEdit = new QLineEdit(centralWidget);
@@ -128,6 +131,7 @@ public:
         menu->addAction(action_3);
         menu_2->addAction(action_4);
         menu_3->addAction(action_5);
+        menu_3->addAction(action_6);
 
         retranslateUi(MainWindow);
 
@@ -142,6 +146,7 @@ public:
         action_3->setText(QApplication::translate("MainWindow", "\320\222\321\213\321\205\320\276\320\264", Q_NULLPTR));
         action_4->setText(QApplication::translate("MainWindow", "\320\232\320\276\320\275\320\262\320\265\321\200\321\202\320\270\321\200\320\276\320\262\320\260\321\202\321\214 .&cue", Q_NULLPTR));
         action_5->setText(QApplication::translate("MainWindow", "\320\236 \320\277\321\200\320\276\320\263\321\200\320\260\320\274\320\274\320\265", Q_NULLPTR));
+        action_6->setText(QApplication::translate("MainWindow", "\320\233\320\270\321\206\320\265\320\275\320\267\320\270\321\217", Q_NULLPTR));
         lineEdit->setText(QString());
         lineEdit_2->setText(QString());
         pushButton->setText(QApplication::translate("MainWindow", "\320\237\320\276\321\200\320\265\320\267\320\260\321\202\321\214!", Q_NULLPTR));

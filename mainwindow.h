@@ -30,6 +30,8 @@ private slots:
 
     void about();
 
+    void license();
+
 private:
     Ui::MainWindow *ui;
 };
