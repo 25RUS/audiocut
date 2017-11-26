@@ -200,8 +200,7 @@ void MainWindow::about()
     {
         txt=readme.readAll();
     }
-
-    QMessageBox::information(this, "About AudioCut", txt);
+    ui->textEdit->setText(txt);
 }
 
 //license
@@ -213,8 +212,7 @@ void MainWindow::license()
     {
         txt=lic.readAll();
     }
-
-    QMessageBox::information(this, "About AudioCut", txt);
+    ui->textEdit->setText(txt);
 }
 
 QString replace(QString str, bool p)
