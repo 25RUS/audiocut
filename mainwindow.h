@@ -32,6 +32,18 @@ private slots:
 
     void license();
 
+    void getflacnames();
+
+    void on_pushButton_6_clicked();
+
+    void on_pushButton_4_clicked();
+
+    void on_comboBox_activated(const QString &arg1);
+
+    void on_pushButton_5_clicked();
+
+    void convert();
+
 private:
     Ui::MainWindow *ui;
 };

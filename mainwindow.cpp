@@ -18,9 +18,12 @@
 #include <QTextDecoder>
 #include <QTextStream>
 #include <QCheckBox>
+#include <QComboBox>
+#include <QProgressDialog>
 
-void target(QString);
-QString replace(QString, bool);
+#include "replace.cpp"
+
+void target(QString); //получение имён файлов
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -31,6 +34,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->action_4, &QAction::triggered, this, &MainWindow::translate);
     connect(ui->action_5, &QAction::triggered, this, &MainWindow::about);
     connect(ui->action_6, &QAction::triggered, this, &MainWindow::license);
+
+    QStringList af = {"формат", "mp3", "aac", "ogg"};
+    ui->comboBox->addItems(af);
+
+    QStringList f = {"96000", "48000", "44100", "32000", "24000", "22050", "16000", "11025", "8000"};
+    ui->comboBox_3->addItems(f);
 }
 
 
@@ -41,6 +50,7 @@ MainWindow::~MainWindow()
 }
 
 QProcess *cut = new QProcess();
+QProcess *converter = new QProcess;
 QString infile="", incue="", new_audio_name=""; //сюда запишутся имена входных файлов
 QString in_format = "*.flac *.ape *.wav", cue = "*.cue"; //форматы файлов на вход
 
@@ -55,13 +65,17 @@ void MainWindow::on_pushButton_clicked()
     QString in = ui->lineEdit->text(); //исходная директория
     QString out = ui->lineEdit_2->text(); //целевая директория
 
+
+
     if(in!="" && out!="")
     {
         //определение путей
         target(in);
 
         //команда на начало резки файла
-        cut->start("shnsplit -d " + out + '/' + " -f " + in + '/' + incue + " -o \"flac flac -V --best -o %f -\" "  + in  + '/' + infile + " -t \"%n. %p - %t\"");
+        //cut->start("shnsplit -d " + out + '/' + " -f " + in + '/' + incue + " -o \"flac flac -V --best -o %f -\" "  + in  + '/' + infile + " -t \"%n. %p - %t\"");
+
+        /*QMessageBox::information(this, "command",*/ cut->start("shnsplit -d \"" + out + '/' + '\"' + " -f \"" + in + '/' + incue + '\"' + " -o \"flac flac -V --best -o %f -\" "  + in  + '/' + infile + " -t \"%n. %p - %t\"");
 
         //обработка ответов от команды
         if( !cut->waitForStarted() || !cut->waitForFinished() )
@@ -73,6 +87,7 @@ void MainWindow::on_pushButton_clicked()
 
         ui->textEdit->insertPlainText("Дождитесь окончания процесса!\n");
         cut->close();
+        //getflacnames(); //заполнения списка конвертации
     }
     else
         QMessageBox::critical(this, "ERROR!", "Заполните поля!");
@@ -100,6 +115,31 @@ void MainWindow::on_pushButton_3_clicked()
 
            ui->lineEdit_2->setText(dirname);
 }
+
+//выбор директории сохранения сконверченых песенок
+void MainWindow::on_pushButton_4_clicked()
+{
+    QString dirname = QFileDialog::getExistingDirectory(
+                       this,
+                       tr("Select a Directory"),
+                       QDir::currentPath() );
+
+           ui->lineEdit_3->setText(dirname);
+}
+
+//запуск конвертации
+void MainWindow::on_pushButton_5_clicked()
+{
+    convert();
+}
+
+//получение имён .flac файлов после нарезки
+void MainWindow::on_pushButton_6_clicked()
+{
+    getflacnames();
+}
+
+//*****************************************************************************************************
 
 void target(QString in)
 {
@@ -191,6 +231,8 @@ void MainWindow::translate()
 
 }
 
+
+
 //about
 void MainWindow::about()
 {
@@ -215,188 +257,86 @@ void MainWindow::license()
     ui->textEdit->setText(txt);
 }
 
-QString replace(QString str, bool p)
+QStringList flacfilelist;
+
+//получение имён .flac файлов после нарезки
+void MainWindow::getflacnames()
 {
-    QString str0;
-    for(int i=0; i<str.size(); i++)
+    QDir flacdir(ui->lineEdit_2->text());
+    QStringList srcfilename = flacdir.entryList(QStringList() << "*.flac", QDir::Files);
+    for(int i=0; i<srcfilename.count(); i++)
+        QFile::rename(ui->lineEdit_2->text() + '/' + srcfilename[i], ui->lineEdit_2->text() + '/' + replace(srcfilename[i], 1));
+
+    flacfilelist = flacdir.entryList(QStringList() << "*.flac", QDir::Files);
+    for(int i=0; i<flacfilelist.count(); i++)
+        ui->textEdit_2->insertPlainText(flacfilelist[i]+'\n');
+}
+
+void MainWindow::on_comboBox_activated(const QString &arg1)
+{
+    QStringList bitrate={"320", "256", "224", "192", "160", "128", "96", "64", "56", "48", "32", "24", "16", "12", "8"};
+    ui->comboBox_2->clear();
+    if(ui->comboBox->currentText()=="mp3")
     {
-        if(str[i]=="А")
-            str0+='A';
-        else if(str[i]=="а")
-            str0+='a';
-        else if(str[i]=="Б")
-            str0+='B';
-        else if(str[i]=="б")
-            str0+='b';
-        else if(str[i]=="В")
-            str0+='V';
-        else if(str[i]=="в")
-            str0+='v';
-        else if(str[i]=="Г")
-            str0+='G';
-        else if(str[i]=="г")
-            str0+='g';
-        else if(str[i]=="Д")
-            str0+='D';
-        else if(str[i]=="д")
-            str0+='d';
-        else if(str[i]=="Е")
-            str0+='E';
-        else if(str[i]=="е")
-            str0+='e';
-        else if(str[i]=="Ё")
-        {
-             str0+='Y';
-             str0+='o';
-        }
-        else if(str[i]=="ё")
-        {
-             str0+='y';
-             str0+='o';
-        }
-        else if(str[i]=="Ж")
-        {
-             str0+='Z';
-             str0+='h';
-        }
-        else if(str[i]=="ж")
-        {
-             str0+='z';
-             str0+='h';
-        }
-        else if(str[i]=="З")
-            str0+='Z';
-        else if(str[i]=="з")
-            str0+='z';
-        else if(str[i]=="И")
-            str0+='I';
-        else if(str[i]=="и")
-            str0+='i';
-        else if(str[i]=="Й")
-            str0+='J';
-        else if(str[i]=="й")
-            str0+='j';
-        else if(str[i]=="К")
-            str0+='K';
-        else if(str[i]=="к")
-            str0+='k';
-        else if(str[i]=="Л")
-            str0+='L';
-        else if(str[i]=="л")
-            str0+='l';
-        else if(str[i]=="М")
-            str0+='M';
-        else if(str[i]=="м")
-            str0+='m';
-        else if(str[i]=="Н")
-            str0+='N';
-        else if(str[i]=="н")
-            str0+='n';
-        else if(str[i]=="О")
-            str0+='O';
-        else if(str[i]=="о")
-            str0+='o';
-        else if(str[i]=="П")
-            str0+='P';
-        else if(str[i]=="п")
-            str0+='p';
-        else if(str[i]=="Р")
-            str0+='R';
-        else if(str[i]=="р")
-            str0+='r';
-        else if(str[i]=="С")
-            str0+='S';
-        else if(str[i]=="с")
-            str0+='s';
-        else if(str[i]=="Т")
-            str0+='T';
-        else if(str[i]=="т")
-            str0+='t';
-        else if(str[i]=="У")
-            str0+='U';
-        else if(str[i]=="у")
-            str0+='u';
-        else if(str[i]=="Ф")
-            str0+='F';
-        else if(str[i]=="ф")
-            str0+='f';
-        else if(str[i]=="Х")
-            str0+='H';
-        else if(str[i]=="х")
-            str0+='h';
-        else if(str[i]=="Ц")
-            str0+='C';
-        else if(str[i]=="ц")
-            str0+='c';
-        else if(str[i]=="Ч")
-        {
-             str0+='C';
-             str0+='h';
-        }
-        else if(str[i]=="ч")
-        {
-             str0+='c';
-             str0+='h';
-        }
-        else if(str[i]=="Ш")
-        {
-             str0+='S';
-             str0+='h';
-        }
-        else if(str[i]=="ш")
-        {
-             str0+='s';
-             str0+='h';
-        }
-        else if(str[i]=="Щ")
-        {
-             str0+='S';
-             str0+='h';
-        }
-        else if(str[i]=="щ")
-        {
-             str0+='s';
-             str0+='h';
-        }
-        else if(str[i]=="Ъ")
-            /*str0+=""*/;
-        else if(str[i]=="ъ")
-            /*str0+=""*/;
-        else if(str[i]=="Ы")
-            str0+='I';
-        else if(str[i]=="ы")
-            str0+='i';
-        else if(str[i]=="Ь")
-            /*str0+=""*/;
-        else if(str[i]=="ь")
-            /*str0+=""*/;
-        else if(str[i]=="Э")
-            str0+='E';
-        else if(str[i]=="э")
-            str0+='e';
-        else if(str[i]=="Ю")
-            str0+='U';
-        else if(str[i]=="ю")
-            str0+='u';
-        else if(str[i]=="Я")
-        {
-             str0+='Y';
-             str0+='a';
-        }
-        else if(str[i]=="я")
-        {
-             str0+='y';
-             str0+='a';
-       }
-       else if(str[i]==" ")
-        {
-            if(p==0)
-                str0+=str[i];
-            else if(p==1)
-                str0+="_";
-        }
-        else
-           str0+=str[i];
+        ui->comboBox_2->addItems(bitrate);
     }
-    return str0;
+    else if(ui->comboBox->currentText()=="aac")
+    {
+        ui->comboBox_2->addItems(bitrate);
+    }
+    else if(ui->comboBox->currentText()=="ogg")
+    {
+        ui->comboBox_2->addItems(bitrate);
+    }
+}
+
+//конвертация
+void MainWindow::convert()
+{
+    QProgressDialog* pprd = new QProgressDialog("Ждать!!!", "&Cancel", 0, flacfilelist.count());
+    pprd->setMinimumDuration(0);
+    pprd->setWindowTitle("Идёт конвертация!");
+
+    for(int i=0; i<flacfilelist.count(); i++)
+    {
+        pprd->setValue(i);
+        qApp->processEvents();
+        if (pprd->wasCanceled())
+        {
+             break;
+        }
+
+        converter->setWorkingDirectory(ui->lineEdit_3->text());
+        QStringList audioname=flacfilelist[i].split(".");
+
+        int title;
+        if(audioname.count()>2)
+            title=audioname.count()-2;
+        else if(audioname.count()==2)
+            title=audioname.count()-1;
+
+        QString newout = replace(audioname[title], 1);
+        QString command;
+        if(ui->comboBox->currentText()=="mp3")
+           command = "ffmpeg -i \"" + ui->lineEdit_2->text() + '/' + flacfilelist[i] + "\" -ar " + ui->comboBox_3->currentText() + " -ab " + ui->comboBox_2->currentText() + " -f " + ui->comboBox->currentText() + " " +  newout + '.' + ui->comboBox->currentText();
+        else if(ui->comboBox->currentText()=="aac")
+           command = "ffmpeg -i \"" + ui->lineEdit_2->text() + '/' + flacfilelist[i] + "\" -acodec aac -ar " + ui->comboBox_3->currentText() + " -ab " + ui->comboBox_2->currentText() + "k " +  newout + '.' + ui->comboBox->currentText();
+        else if(ui->comboBox->currentText()=="ogg")
+           command = "ffmpeg -i \"" + ui->lineEdit_2->text() + '/' + flacfilelist[i] + "\" -acodec libvorbis -ar " + ui->comboBox_3->currentText() + " -ab " + ui->comboBox_2->currentText() + "k " +  newout + '.' + ui->comboBox->currentText();
+        else
+        {
+            QMessageBox::critical(this, "ERROR", "Select format!");
+            break;
+        }
+
+        converter->start(command);
+        if(!converter->waitForStarted() || !converter->waitForFinished())
+            return;
+        converter->close();
+
+        if(ui->checkBox_2->isChecked())
+            QFile(ui->lineEdit_2->text() + '/' + flacfilelist[i]).remove();
+    }
+    pprd->setValue(flacfilelist.count()) ;
+    delete pprd;
 }
