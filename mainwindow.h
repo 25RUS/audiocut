@@ -44,6 +44,8 @@ private slots:
 
     void convert();
 
+    void flacnamestolist();
+
 private:
     Ui::MainWindow *ui;
 };

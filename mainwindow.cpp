@@ -65,17 +65,14 @@ void MainWindow::on_pushButton_clicked()
     QString in = ui->lineEdit->text(); //исходная директория
     QString out = ui->lineEdit_2->text(); //целевая директория
 
-
-
     if(in!="" && out!="")
     {
         //определение путей
         target(in);
-
+        cut->setWorkingDirectory(in);
         //команда на начало резки файла
-        //cut->start("shnsplit -d " + out + '/' + " -f " + in + '/' + incue + " -o \"flac flac -V --best -o %f -\" "  + in  + '/' + infile + " -t \"%n. %p - %t\"");
-
-        /*QMessageBox::information(this, "command",*/ cut->start("shnsplit -d \"" + out + '/' + '\"' + " -f \"" + in + '/' + incue + '\"' + " -o \"flac flac -V --best -o %f -\" "  + in  + '/' + infile + " -t \"%n. %p - %t\"");
+        ui->textEdit->insertPlainText("Дождитесь окончания процесса!\n");
+        cut->start("shnsplit -d \"" + out + '/' + "\" -f \"" + incue + '\"' + " -o \"flac flac -V --best -o %f -\" "  + '\"' + infile + "\" -t \"%n. %p - %t\"");
 
         //обработка ответов от команды
         if( !cut->waitForStarted() || !cut->waitForFinished() )
@@ -85,7 +82,7 @@ void MainWindow::on_pushButton_clicked()
         ui->textEdit->insertPlainText(cut->readAllStandardOutput());
         ui->textEdit->insertPlainText(cut->readAllStandardError());
 
-        ui->textEdit->insertPlainText("Дождитесь окончания процесса!\n");
+
         cut->close();
         //getflacnames(); //заполнения списка конвертации
     }
@@ -167,7 +164,7 @@ void MainWindow::translate()
     {
         target(dir);
         QFile cuefile(dir + '/' + incue);
-        QFile cuefileout(dir + '/' + replace(incue, 1));
+        QFile cuefileout(dir + '/' + "ac_" + replace(incue, 1));
         new_audio_name = replace(infile, 1); //новое имя для трека
         QString str, str0;
 
@@ -262,6 +259,7 @@ QStringList flacfilelist;
 //получение имён .flac файлов после нарезки
 void MainWindow::getflacnames()
 {
+    ui->textEdit_2->clear();
     QDir flacdir(ui->lineEdit_2->text());
     QStringList srcfilename = flacdir.entryList(QStringList() << "*.flac", QDir::Files);
     for(int i=0; i<srcfilename.count(); i++)
@@ -270,6 +268,16 @@ void MainWindow::getflacnames()
     flacfilelist = flacdir.entryList(QStringList() << "*.flac", QDir::Files);
     for(int i=0; i<flacfilelist.count(); i++)
         ui->textEdit_2->insertPlainText(flacfilelist[i]+'\n');
+}
+
+//автообновление списка
+void MainWindow::flacnamestolist()
+{
+    ui->textEdit_2->clear();
+    QDir dir(ui->lineEdit_2->text());
+    QStringList list = dir.entryList(QStringList() << "*.flac", QDir::Files);
+    for(int i=0; i<list.count(); i++)
+        ui->textEdit_2->insertPlainText(list[i]+'\n');
 }
 
 void MainWindow::on_comboBox_activated(const QString &arg1)
@@ -336,7 +344,10 @@ void MainWindow::convert()
 
         if(ui->checkBox_2->isChecked())
             QFile(ui->lineEdit_2->text() + '/' + flacfilelist[i]).remove();
+
+        flacnamestolist();
     }
+
     pprd->setValue(flacfilelist.count()) ;
     delete pprd;
 }
