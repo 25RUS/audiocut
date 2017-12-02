@@ -1,7 +1,7 @@
 Summary:	Graphical .flac .ape .wav splitter
 Name:		audiocut	
-Version:	1.0
-Release:	3
+Version:	1.1
+Release:	1
 License:	GPLv3
 Group:		Sound 
 Url:		https://github.com/25RUS/audiocut
