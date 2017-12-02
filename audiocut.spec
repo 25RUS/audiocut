@@ -15,6 +15,7 @@ BuildRequires:	pkgconfig(Qt5Widgets)
 Requires: shntool
 Requires: flac
 Requires: wavpack
+Requires: ffmpeg
 
 %description
 audiocut is graphical interface for shntool
